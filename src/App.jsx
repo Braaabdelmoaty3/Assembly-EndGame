@@ -2,20 +2,23 @@ import React from "react";
 import { languages } from "./languages";
 
 export default function Header() {
-  /**
-   * Goal: Build out the main parts of our app
-   *
-   * Challenge: Create the language chips. Use the
-   * `languages.js` file to pull in the array of
-   * languages to use, which contains the language
-   * name, background color, and text color.
-   *
-   * Hint for layout: use a flex container that can wrap
-   * to layout the languages.
-   */
 
   const languagesElements = languages.map((lang) => {
-    return <span>{lang.name}</span>;
+    return (
+      <span
+        key={lang.name}
+        style={{
+          backgroundColor: lang.backgroundColor,
+          color: lang.color,
+          padding: "4px 8px",
+          borderRadius: "12px",
+          margin: "3px",
+          display: "inline-block",
+        }}
+      >
+        {lang.name}
+      </span>
+    );
   });
 
   return (
@@ -33,6 +36,9 @@ export default function Header() {
         <div className="flex flex-col justify-center items-center w-full max-w-[352px] h-[59px] bg-[#10A95B] mt-4 rounded">
           <h2 className="text-[#F9F4DA] text-lg sm:text-xl">You Win !</h2>
           <h2 className="text-[#F9F4DA] text-sm sm:text-base">Well done! 🎉</h2>
+        </div>
+        <div className="flex flex-wrap justify-center max-w-[352px] mt-4">
+          {languagesElements}
         </div>
       </header>
     </div>

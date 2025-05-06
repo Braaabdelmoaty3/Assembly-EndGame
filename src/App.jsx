@@ -4,12 +4,6 @@ import { clsx } from "clsx";
 import { languages } from "./languages";
 
 export default function Header() {
-  /**
-   * Goal: Allow the user to start guessing the letters
-   *
-   * Challenge: Only display the correctly-guessed letters
-   * in the word
-   */
 
   const [currentWord, setCurrentWord] = useState("react");
   const [guessing, setGuessing] = useState([]);

@@ -1,8 +1,70 @@
 import React from "react";
+import { useState } from "react";
+import { clsx } from "clsx";
 import { languages } from "./languages";
 
 export default function Header() {
+  /**
+   * Goal: Allow the user to start guessing the letters
+   *
+   * Challenge: Only display the correctly-guessed letters
+   * in the word
+   */
 
+  const [currentWord, setCurrentWord] = useState("react");
+  const [guessing, setGuessing] = useState([]);
+
+  function handleGuess(letter) {
+    if (!guessing.includes(letter)) {
+      setGuessing((prevGuesses) => [...prevGuesses, letter]);
+    }
+  }
+
+  const alphabet = "abcdefghijklmnopqrstuvwxyz";
+
+  //creating place to hold the guesses
+  const keyboard = alphabet.split("").map((letter) => {
+    // define the guess letter and knowing when it will be right or wrong
+    const isGuessed = guessing.includes(letter);
+    const isCorrect = isGuessed && currentWord.includes(letter);
+    const isWrong = isGuessed && !currentWord.includes(letter);
+
+    const className = clsx({
+      correct: isCorrect,
+      wrong: isWrong,
+    });
+
+    return (
+      // the keyboard
+      <button
+        key={letter}
+        className={clsx(
+          //making the
+          "inline-flex justify-center items-center w-[40px] h-[40px] text-white text-lg font-medium rounded-md m-1 hover:bg-[#fccf5c] active:bg-[#fabe3f]",
+          {
+            "bg-[#FCBA29] text-white": isGuessed,
+            "bg-green-500 text-white": isCorrect,
+            "bg-red-500 text-white": isWrong,
+          }
+        )}
+        onClick={() => handleGuess(letter)}
+      >
+        { letter.toUpperCase()}
+      </button>
+    );
+  });
+
+  const wordLetters = currentWord.split("").map((letter, index) => {
+    return (
+      <span
+        key={index}
+        className="inline-flex justify-center items-center w-[40px] h-[40px] 
+                 text-[#F9F4DA] text-2xl font-bold border-b border-[#F9F4DA] mx-1"
+      >
+        {guessing.includes(letter) ? letter.toUpperCase() : ""}
+      </span>
+    );
+  });
   const languagesElements = languages.map((lang) => {
     return (
       <span
@@ -41,6 +103,13 @@ export default function Header() {
           {languagesElements}
         </div>
       </header>
+      <div className="flex justify-center items-center mx-auto mt-8">
+        <div className="flex">{wordLetters}</div>
+      </div>
+
+      <div className="flex flex-wrap justify-center max-w-lg mx-auto mt-8">
+        {keyboard}
+      </div>
     </div>
   );
 }

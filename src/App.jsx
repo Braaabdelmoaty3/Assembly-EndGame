@@ -4,8 +4,19 @@ import { clsx } from "clsx";
 import { languages } from "./languages";
 
 export default function Header() {
+  /**
+   * Goal: Add in the incorrect guesses mechanism to the game
+   *
+   * Challenge:
+   * 1. Create a variable `isGameOver` which evaluates to `true`
+   *    if the user has guessed incorrectly 8 times. Consider how
+   *    we might make this more dynamic if we were ever to add or
+   *    remove languages from the languages array.
+   * 2. Conditionally render the New Game button only if the game
+   *    is over.
+   */
 
-  const [currentWord, setCurrentWord] = useState("react");
+  const [currentWord] = useState("react");
   const [guessing, setGuessing] = useState([]);
 
   function handleGuess(letter) {
@@ -13,7 +24,14 @@ export default function Header() {
       setGuessing((prevGuesses) => [...prevGuesses, letter]);
     }
   }
+  //handle the wrong guesses
+  const wrongGuessCount = guessing.filter(
+    (letter) => !currentWord.includes(letter)
+  ).length;
 
+  
+
+  
   const alphabet = "abcdefghijklmnopqrstuvwxyz";
 
   //creating place to hold the guesses
@@ -22,13 +40,8 @@ export default function Header() {
     const isGuessed = guessing.includes(letter);
     const isCorrect = isGuessed && currentWord.includes(letter);
     const isWrong = isGuessed && !currentWord.includes(letter);
-
-    const className = clsx({
-      correct: isCorrect,
-      wrong: isWrong,
-    });
-
     return (
+
       // the keyboard
       <button
         key={letter}
@@ -43,7 +56,7 @@ export default function Header() {
         )}
         onClick={() => handleGuess(letter)}
       >
-        { letter.toUpperCase()}
+        {letter.toUpperCase()}
       </button>
     );
   });
@@ -59,21 +72,31 @@ export default function Header() {
       </span>
     );
   });
-  const languagesElements = languages.map((lang) => {
+
+  const languagesElements = languages.map((lang, index) => {
+    const isLanguageLost = index < wrongGuessCount;
+    const styles = {
+      backgroundColor: lang.backgroundColor,
+      color: lang.color,
+      padding: "4px 8px",
+      borderRadius: "12px",
+      margin: "3px",
+      display: "inline-block",
+      position: "relative",
+    };
+
+    // Create a chip with a skull overlay when lost
     return (
-      <span
-        key={lang.name}
-        style={{
-          backgroundColor: lang.backgroundColor,
-          color: lang.color,
-          padding: "4px 8px",
-          borderRadius: "12px",
-          margin: "3px",
-          display: "inline-block",
-        }}
-      >
-        {lang.name}
-      </span>
+      <div key={lang.name} className="relative inline-block">
+        <span className={`${isLanguageLost ? "lost" : ""}`} style={styles}>
+          {lang.name}
+        </span>
+        {isLanguageLost && (
+          <span className="absolute inset-0 flex items-center justify-center text-2xl bg-black/70 rounded-lg">
+            💀
+          </span>
+        )}
+      </div>
     );
   });
 
